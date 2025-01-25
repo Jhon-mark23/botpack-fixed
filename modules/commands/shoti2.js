@@ -6,7 +6,7 @@ module.exports.config = {
   hasPermssion: 0,
   commandCategory: "other",
   usage: "[shoti]",
-  cooldowns: 60,
+  cooldowns: 2,
   dependencies: [],
   usePrefix: true,
 };
@@ -18,8 +18,8 @@ module.exports.run = async function({ api, event }) {
 api.sendMessage(`⏱️ | Sending Shoti Please Wait...`, event.threadID, event.messageID);
   let data = await axios.get('https://random-use-api-production.up.railway.app/shoti');
   var file = fs.createWriteStream(__dirname + "/cache/shoti.mp4");
-  var rqs = request(encodeURI(data.data.data.url));
-  console.log('Shoti Downloaded >>> ' + data.data.data.id)
+  var rqs = request(encodeURI(data.data.url));
+  console.log('Shoti Downloaded >>> ' + data.data.data)
   rqs.pipe(file);
   console.log(data)
   file.on('finish', () => {
