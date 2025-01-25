@@ -38,12 +38,7 @@ module.exports.run = async function ({ api, event }) {
             }, event.threadID, event.messageID);
             console.log(data);
 
-        } else {
-            api.sendMessage(data.message, event.threadID, event.messageID);
-        }
-
-    } catch (error) {
+        } catch {
         console.error('Error fetching video:', error);
-        api.sendMessage(error.message, event.threadID, event.messageID);
-    }
-};
+            api.sendMessage(data.message, error.message, event.threadID, event.messageID);
+        };
