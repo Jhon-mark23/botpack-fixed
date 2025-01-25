@@ -16,13 +16,13 @@ module.exports.run = async function ({ api, event }) {
     try {
         const sending = await api.sendMessage("⏱️ | Sending Shoti Video Please Wait....", event.threadID, event.messageID);
         
-        const response = await axios.get('https://libyzxy0.serv00.net/');
+        const response = await axios.get('https://random-use-api-production.up.railway.app/shoti');
         const data = response.data;
 
         if (data.code === 200 && data.message === "success") {
             const videoInfo = data.data;
-            const { url, title, user, duration } = videoInfo;
-            const { username, nickname } = user;
+            const { url, name } = videoInfo;
+        
 
             
             const videoStream = await axios({
@@ -33,11 +33,11 @@ module.exports.run = async function ({ api, event }) {
 
             api.unsendMessage(sending.messageID);
 
-            const message = `✅ 𝗦𝘂𝗰𝗰𝗲𝘀𝘀𝗳𝘂𝗹𝗹𝘆 𝗦𝗲𝗻𝘁 𝗦𝗵𝗼𝘁𝗶\n━━━━━━━━━━━━━━━━━━\nTitle: ${title}\nDuration: ${duration}\nUser: ${nickname} (@${username})\n`;
+            const message = `✅ 𝗦𝘂𝗰𝗰𝗲𝘀𝘀𝗳𝘂𝗹𝗹𝘆 𝗦𝗲𝗻𝘁 𝗦𝗵𝗼𝘁𝗶\n━━━━━━━━━━━━━━━━━━\nName: ${name}\n`;
 
             api.sendMessage({
                 body: message,
-                attachment: videoStream.data  
+                attachment: videoStream.url  
             }, event.threadID, event.messageID);
 
         } else {
