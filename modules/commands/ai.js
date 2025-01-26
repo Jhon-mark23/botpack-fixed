@@ -23,7 +23,9 @@ module.exports.handleReply = async function ({ api, event, handleReply }) {
         const response = await axios.get(apiUrl);
         const gogo = response.data.response;
 
-        const responseMessage = `𝗖𝗛𝗔𝗧𝗚𝗣𝗧\n━━━━━━━━━━━━━━━━━━\n${gogo}\n━━━━━━━━━━━━━━━━━━\n`;
+        const responseMessage = `𝗖𝗛𝗔𝗧𝗚𝗣𝗧\n━━━━━━━━━━━━━━━━━\n${gogo}\n━━━━━━━━━━━━━━━━\n`;
+
+
         api.editMessage(responseMessage, lad.messageID, threadID, messageID);
     } catch (error) {
         console.error(error);
@@ -48,12 +50,12 @@ module.exports.run = async function ({ api, event, args }) {
             if (attachment.type === "photo") {
                 const imageURL = attachment.url;
 
-                const geminiUrl = `https://kaiz-apis.gleeze.com/api/gemini-vision?q=${encodeURIComponent(args.join(" "))}&uid=${id}&imageUrl=${encodeURIComponent(imageURL)}`;
+                const geminiUrl = `https://kaiz-apis.gleeze.com/api/gemini-vision?q=${encodeURIComponent(args.join(" "))}&uid=123&imageUrl=${encodeURIComponent(imageURL)}`;
                 const response = await axios.get(geminiUrl);
                 const bobo = response.data.response;
 
-                if (vision) {
-                    return api.editMessage(`𝗚𝗲𝗺𝗶𝗻𝗶 𝗩𝗶𝘀𝗶𝗼𝗻 𝗜𝗺𝗮𝗴𝗲 𝗥𝗲𝗰𝗼𝗴𝗻𝗶𝘁𝗶𝗼𝗻 \n━━━━━━━━━━━━━━━━━━\n${bobo}\n━━━━━━━━━━━━━━━━━━\n`, lad.messageID, event.threadID, event.messageID);
+                if (bobo) {
+                    return api.editMessage(`𝗚𝗲𝗺𝗶𝗻𝗶 𝗩𝗶𝘀𝗶𝗼𝗻 𝗜𝗺𝗮𝗴𝗲 𝗥𝗲𝗰𝗼𝗴𝗻𝗶𝘁𝗶𝗼𝗻 \n━━━━━━━━━━━━━━━━\n${bobo}\n━━━━━━━━━━━━━━━━\n`, lad.messageID, event.threadID, event.messageID);
                 } else {
                     return api.sendMessage("🤖 Failed to recognize the image.", threadID, messageID);
                 }
@@ -63,7 +65,7 @@ module.exports.run = async function ({ api, event, args }) {
         const response = await axios.get(apiUrl);
         const gogo = response.data.response;
 
-        const responseMessage = `𝗖𝗛𝗔𝗧𝗚𝗣𝗧\n━━━━━━━━━━━━━━━━━━\n${gogo}\n━━━━━━━━━━━━━━━━━━`;
+        const responseMessage = `𝗖𝗛𝗔𝗧𝗚𝗣𝗧\n━━━━━━━━━━━━━━━━\n${gogo}\n━━━━━━━━━━━━━━━━`;
         api.editMessage(responseMessage, lad.messageID, event.threadID, event.messageID);
         global.client.handleReply.push({
             name: this.config.name,

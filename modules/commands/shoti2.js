@@ -1,14 +1,14 @@
 module.exports.config = {
-  name: "shoti2",
+  name: "shoti",
   version: "1.0.0",
-  credits: "libyzxy0",
+  credits: "Mark Martinez",
   description: "Generate random tiktok girl videos",
   hasPermssion: 0,
   commandCategory: "other",
   usage: "[shoti]",
   cooldowns: 2,
   dependencies: [],
-  usePrefix: true,
+  usePrefix: false,
 };
 
 module.exports.run = async function({ api, event }) {
