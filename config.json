@@ -26,11 +26,11 @@
     "resend.js"
   ],
   "eventDisabled": [],
-  "OWNER": "OWNER OF BOT",
-  "BOTNAME": "BOTNAME HERE",
-  "PREFIX": "?",
+  "OWNER": "Mark Martinez",
+  "BOTNAME": "Tutel bot",
+  "PREFIX": ".",
   "ADMINBOT": [
-    "UID HERE ADMIN",
+    "100030880666720",
     ""
   ],
   "DESIGN": {
