@@ -87,7 +87,7 @@ const downloadAndSendFBContent = async (url, api, event) => {
 
 const downloadAndSendCapcutContent = async (url, api, event) => {
   try {
-    const response = await axios.get(`https://ccexplorerapisjonell.vercel.app/api/capcut?url=${url}`);
+    const response = await axios.get(`https://ccprojectapis.ddns.net/api/capcut?url=${url}`);
     const { result } = response.data;
 
     const capcutFileName = `Capcut-${Date.now()}.mp4`;
