@@ -35,11 +35,11 @@ module.exports.run = async function ({ api, event, args }) {
 
     await api.editMessage(`⏱️ | Video found: "${title}". Retrieving download link...`, findingMessage.messageID);
 
-    const apiUrl = `https://joncll.serv00.net/videodl.php?url=${url}`;
+    const apiUrl = `https://joncll.serv00.net/yt.php?url=${url}`;
     const response = await axios.get(apiUrl);
-    const { video } = response.data;
+    const { link } = response.data;
 
-    if (!video) {
+    if (!link) {
       await api.sendMessage(`❌ | No download link found for "${title}".`, event.threadID);
       return;
     }
