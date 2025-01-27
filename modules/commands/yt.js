@@ -8,7 +8,7 @@ module.exports.config = {
     hasPermission: 0,
     credits: "ryuko",
     description: "Send Youtube Music",
-    hasprefix: false,
+    usePrefix: true,
     commandCategory: "Utility",
     usages: `ytmp3 [music title]`,
     cooldowns: 5,
