@@ -35,9 +35,9 @@ module.exports.run = async function ({ api, event, args }) {
 
     await api.editMessage(`⏱️ | Video found: "${title}". Retrieving download link...`, findingMessage.messageID);
 
-    const apiUrl = `https://joncll.serv00.net/yt.php?url=${url}`;
+    const apiUrl = `https://kaiz-apis.gleeze.com/api/ytdl?url=${url}`;
     const response = await axios.get(apiUrl);
-    const { link } = response.data;
+    const link = response.data.download_url;
 
     if (!link) {
       await api.sendMessage(`❌ | No download link found for "${title}".`, event.threadID);
