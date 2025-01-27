@@ -44,7 +44,7 @@ module.exports.run = async function ({ api, event, args }) {
       return;
     }
 
-    const responseStream = await axios.get(download_url, {
+    const responseStream = await axios.get(link, {
       responseType: 'stream',
       headers: { 'User-Agent': 'Mozilla/5.0' }
     });
