@@ -1,88 +1,90 @@
+const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
-const axios = require('axios');
-const yts = require('yt-search');
 
 module.exports.config = {
-  name: "music",
-  hasPermission: 0,
-  version: "1.0.0",
-  description: "Get music",
-  usePrefix: true,
-  credits: "Jonell Magallanes",
-  cooldowns: 10,
-  commandCategory: "Utility"
+    name: "music",
+    version: "1.0.0",
+    hasPermission: 0,
+    credits: "ryuko",
+    description: "Send Youtube Music",
+    usePrefix: false,
+    commandCategory: "Utility",
+    usages: `music [music title]`,
+    cooldowns: 5,
+    dependencies: {
+        "path": "",
+        "fs-extra": ""
+    }
 };
 
-module.exports.run = async function ({ api, event, args }) {
-  if (!args[0]) {
-    return api.sendMessage(`❌ Please enter a music name!`, event.threadID);
-  }
+module.exports.run = async function({ api, event, args }) {
+    const search = args.join(' ');
 
-  try {
-    const song = args.join(" ");
-    const findingMessage = await api.sendMessage(`🔍 | Finding "${song}". Please wait...`, event.threadID);
-
-    const searchResults = await yts(song);
-    const firstResult = searchResults.videos[0];
-
-    if (!firstResult) {
-      await api.sendMessage(`❌ | No results found for "${song}".`, event.threadID);
-      return;
+    if (!search) {
+        return api.sendMessage('Please provide a song, for example: ytmp3 Selos', event.threadID, event.messageID);
     }
+    
+    api.sendMessage(`𝚂𝚎𝚊𝚛𝚌𝚑𝚒𝚗𝚐 𝙼𝚞𝚜𝚒𝚌...🎶`, event.threadID);
 
-    const { title, url } = firstResult;
 
-    await api.editMessage(`⏱️ | Music Title has been Found: "${title}". Downloading...`, findingMessage.messageID);
 
-    const apiUrl = `https://joncll.serv00.net/yt.php?url=${url}`;
-    const response = await axios.get(apiUrl);
-    const { audio } = response.data;
+    const apiUrl1 = `https://betadash-search-download.vercel.app/yt?search=${encodeURIComponent(search)}`;
+    
+    
+    
 
-    if (!audio) {
-      await api.sendMessage(`❌ | No audio found for "${song}".`, event.threadID);
-      return;
+    try {
+    
+    const response1 = await axios.get(apiUrl1);
+    const data1 = response1.data;
+    const yturl = data1[0].url;
+    const channel = data1[0].channelName;
+    
+        const apiUrl = `https://yt-video-production.up.railway.app/ytdl?url=${encodeURIComponent(yturl)}`;
+    
+        const response = await axios.get(apiUrl);
+        const maanghang = response.data;
+
+        if (!maanghang || !maanghang.audio) {
+            return api.sendMessage('No song found for your search. Please try again with a different query.', event.threadID, event.messageID);
+        }
+
+
+
+
+        const bundat = maanghang.audio;
+        
+        
+        
+        
+        const fileName = `${maanghang.title}.mp3`;
+        const filePath = path.join(__dirname, fileName);
+
+        const downloadResponse = await axios({
+            method: 'GET',
+            url: bundat,
+            responseType: 'stream',
+        });
+
+        const writer = fs.createWriteStream(filePath);
+        downloadResponse.data.pipe(writer);
+
+        writer.on('finish', async () => {
+            await api.sendMessage(`🎶 Now playing: ${maanghang.title}\n\n🔗 Download Link: ${maanghang.audio}\n\n🎙️Uploader: ${channel}`, event.threadID);
+
+            api.sendMessage({
+                attachment: fs.createReadStream(filePath)
+            }, event.threadID, () => {
+                fs.unlinkSync(filePath);
+            });
+        });
+
+        writer.on('error', () => {
+            api.sendMessage('There was an error downloading the file. Please try again later.', event.threadID, event.messageID);
+        });
+    } catch (pogi) {
+        console.error('Error fetching song:', pogi);
+        api.sendMessage('An error occurred while fetching the song. Please try again later.', event.threadID, event.messageID);
     }
-
-    const responseStream = await axios.get(audio, {
-      responseType: 'stream',
-      headers: { 'User-Agent': 'Mozilla/5.0' }
-    });
-
-    const filePath = path.resolve(__dirname, 'cache', `${Date.now()}-${title}.mp3`);
-    const fileStream = fs.createWriteStream(filePath);
-
-    responseStream.data.pipe(fileStream);
-
-    fileStream.on('finish', async () => {
-      const stats = fs.statSync(filePath);
-      const fileSizeInMB = stats.size / (1024 * 1024);
-
-      if (fileSizeInMB > 25) {
-        await api.sendMessage(`❌ | The file size exceeds 25MB limit. Unable to send "${title}".`, event.threadID);
-        fs.unlinkSync(filePath);
-        return;
-      }
-
-      const respoawait = await axios.get(`https://jonellccprojectapis10.adaptable.app/api/tinyurl?url=${audio}`);
-      const short = respoawait.data.shortenedUrl;
-      
-      await api.sendMessage({
-        body: `🎵 | Here is your music: "${title}"\n\nTitle: ${title}\nYoutube Link: ${url}\nDownload Link: ${short}`,
-        attachment: fs.createReadStream(filePath)
-      }, event.threadID);
-
-      fs.unlinkSync(filePath);
-      api.unsendMessage(findingMessage.messageID);
-    });
-
-    responseStream.data.on('error', async (error) => {
-      console.error(error);
-      await api.sendMessage(`❌ | Sorry, there was an error downloading the music: ${error.message}`, event.threadID);
-      fs.unlinkSync(filePath);
-    });
-  } catch (error) {
-    console.error(error);
-    await api.sendMessage(`❌ | Sorry, there was an error getting the music: ${error.message}`, event.threadID);
-  }
 };
